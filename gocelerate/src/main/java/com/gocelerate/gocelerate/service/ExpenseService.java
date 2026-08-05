@@ -14,6 +14,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -30,6 +32,7 @@ public class ExpenseService {
                 .amount(request.getAmount())
                 .category(request.getCategory())
                 .description(request.getDescription())
+                .date(request.getDate())
                 .build();
         return expenseRepository.save(expense);
     }
@@ -38,14 +41,29 @@ public class ExpenseService {
         return expenseRepository.findByMilestoneId(milestoneId);
     }
 
+    public ExpenseDto toDto(Expense e) {
+        Milestone m = e.getMilestone();
+        return new ExpenseDto(
+                e.getId(), m.getId(), m.getTitle(),
+                m.getProject().getId(), m.getProject().getTitle(),
+                e.getDescription(), e.getAmount().doubleValue(), e.getCategory(),
+                effectiveDate(e) != null ? effectiveDate(e).toString() : null
+        );
+    }
+
+    private java.time.LocalDate effectiveDate(Expense e) {
+        return e.getDate() != null ? e.getDate()
+                : (e.getLoggedAt() != null ? e.getLoggedAt().toLocalDate() : null);
+    }
+
     public List<ExpenseDto> getAllExpenses(String category, LocalDate from, LocalDate to) {
         List<Long> accessibleProjectIds = projectService.getAccessibleProjectIds();
 
         return expenseRepository.findAll().stream()
                 .filter(e -> accessibleProjectIds.contains(e.getMilestone().getProject().getId()))
                 .filter(e -> category == null || e.getCategory().equalsIgnoreCase(category))
-                .filter(e -> from == null || (e.getLoggedAt() != null && !e.getLoggedAt().toLocalDate().isBefore(from)))
-                .filter(e -> to == null || (e.getLoggedAt() != null && !e.getLoggedAt().toLocalDate().isAfter(to)))
+                .filter(e -> from == null || (effectiveDate(e) != null && !effectiveDate(e).isBefore(from)))
+                .filter(e -> to == null || (effectiveDate(e) != null && !effectiveDate(e).isAfter(to)))
                 .map(e -> {
                     Milestone m = e.getMilestone();
                     return new ExpenseDto(
@@ -57,7 +75,7 @@ public class ExpenseService {
                             e.getDescription(),
                             e.getAmount().doubleValue(),
                             e.getCategory(),
-                            e.getLoggedAt() != null ? e.getLoggedAt().toLocalDate().toString() : null
+                            effectiveDate(e) != null ? effectiveDate(e).toString() : null
                     );
                 })
                 .collect(Collectors.toList());

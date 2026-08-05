@@ -183,7 +183,7 @@ export default function Reports() {
                     layout="vertical"
                     margin={{ left: 16, right: 16, top: 4, bottom: 4 }}
                   >
-                    <XAxis type="number" tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                    <XAxis type="number" tickFormatter={(v) => `₦${(v / 1000).toFixed(0)}k`}
                       tick={{ fontSize: 11, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
                     <YAxis type="category" dataKey="category" width={90}
                       tick={{ fontSize: 12, fill: '#374151' }} axisLine={false} tickLine={false}

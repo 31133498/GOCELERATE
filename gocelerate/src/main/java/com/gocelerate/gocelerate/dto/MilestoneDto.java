@@ -3,6 +3,8 @@ package com.gocelerate.gocelerate.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class MilestoneDto {
@@ -16,4 +18,5 @@ public class MilestoneDto {
     private double totalExpenses;
     private String createdAt;
     private String evidenceImageUrl;
+    private List<ExpenseDto> expenses;
 }

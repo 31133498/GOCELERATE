@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +23,6 @@ public class ExpenseRequest {
     private String category;
 
     private String description;
+
+    private LocalDate date;
 }

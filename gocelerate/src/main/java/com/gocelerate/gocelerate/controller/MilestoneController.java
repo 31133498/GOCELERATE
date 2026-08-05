@@ -38,7 +38,7 @@ public class MilestoneController {
 
     @Operation(summary = "Get milestones for a project")
     @GetMapping("/api/projects/{id}/milestones")
-    public ResponseEntity<ApiResponse<List<Milestone>>> getMilestonesForProject(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<List<MilestoneDto>>> getMilestonesForProject(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success("Milestones retrieved", milestoneService.getMilestonesForProject(id)));
     }
 

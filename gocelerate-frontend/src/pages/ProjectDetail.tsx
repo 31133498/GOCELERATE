@@ -481,7 +481,7 @@ export default function ProjectDetail() {
         <Modal open={showExpenseModal} onClose={() => setShowExpenseModal(false)} title="Log Expense">
           <form onSubmit={handleLogExpense} className="space-y-4" noValidate>
             <Input label="Description" value={eDesc} onChange={(e) => setEDesc(e.target.value)} error={eErrors.eDesc} placeholder="What was this expense for?" />
-            <Input label="Amount ($)" type="number" min="0" step="0.01" value={eAmount} onChange={(e) => setEAmount(e.target.value)} error={eErrors.eAmount} prefixIcon="ri-money-dollar-circle-line" placeholder="0.00" />
+            <Input label="Amount (₦)" type="number" min="0" step="0.01" value={eAmount} onChange={(e) => setEAmount(e.target.value)} error={eErrors.eAmount} prefixIcon="ri-money-dollar-circle-line" placeholder="0.00" />
             <div>
               <label className="block text-sm font-semibold text-ink mb-1.5">Category</label>
               <select
@@ -552,7 +552,7 @@ export default function ProjectDetail() {
               This records your commitment — no real payment is processed in this version.
             </p>
             <Input
-              label="Amount Pledged ($)"
+              label="Amount Pledged (₦)"
               type="number"
               min="1"
               step="0.01"

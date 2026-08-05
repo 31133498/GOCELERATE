@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,6 +35,8 @@ public class Expense {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    private LocalDate date;
 
     private LocalDateTime loggedAt;
 
