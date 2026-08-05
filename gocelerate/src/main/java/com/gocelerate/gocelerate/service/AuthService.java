@@ -41,12 +41,11 @@ public class AuthService implements UserDetailsService {
                 .build();
     }
 
-    public ApiResponse<String> register(RegisterRequest request) {
+    public ApiResponse<LoginResponse> register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email is already registered");
         }
 
-        // BCrypt hashes the plain-text password; the original is never stored.
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -55,7 +54,11 @@ public class AuthService implements UserDetailsService {
                 .build();
 
         userRepository.save(user);
-        return ApiResponse.success("Registration successful", null);
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        LoginResponse.UserDto userDto = new LoginResponse.UserDto(
+                user.getId(), user.getFullName(), user.getEmail(), user.getRole().name());
+        return ApiResponse.success("Registration successful", new LoginResponse(token, userDto));
     }
 
     public ApiResponse<LoginResponse> login(LoginRequest request) {

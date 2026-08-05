@@ -22,7 +22,7 @@ public class AuthController {
 
     @Operation(summary = "Register a new user", description = "Creates a new IMPLEMENTER or FUNDER account")
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<String>> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
