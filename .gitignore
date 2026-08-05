@@ -1,0 +1,9 @@
+node_modules/
+target/
+.env
+*.class
+dist/
+.DS_Store
+application-local.properties
+*.iml
+.idea/
