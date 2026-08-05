@@ -1,5 +1,6 @@
 package com.gocelerate.gocelerate.service;
 
+import com.gocelerate.gocelerate.dto.ProjectDto;
 import com.gocelerate.gocelerate.dto.ProjectReport;
 import com.gocelerate.gocelerate.exception.ResourceNotFoundException;
 import com.gocelerate.gocelerate.model.Expense;
@@ -12,10 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,50 +29,43 @@ public class ReportService {
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + projectId));
 
         List<Milestone> milestones = milestoneRepository.findByProjectId(projectId);
+        List<Expense> allExpenses = milestones.stream()
+                .flatMap(m -> expenseRepository.findByMilestoneId(m.getId()).stream())
+                .collect(Collectors.toList());
 
-        BigDecimal totalSpent = BigDecimal.ZERO;
-        Map<String, BigDecimal> expenseByCategory = new HashMap<>();
-        List<ProjectReport.MilestoneSummary> milestoneSummaries = new ArrayList<>();
+        double totalSpent = allExpenses.stream()
+                .mapToDouble(e -> e.getAmount().doubleValue())
+                .sum();
+        double totalBudget = project.getTargetBudget().doubleValue();
 
-        for (Milestone milestone : milestones) {
-            List<Expense> expenses = expenseRepository.findByMilestoneId(milestone.getId());
+        // Expenses grouped by category
+        Map<String, Double> categoryMap = allExpenses.stream()
+                .collect(Collectors.groupingBy(
+                        Expense::getCategory,
+                        Collectors.summingDouble(e -> e.getAmount().doubleValue())
+                ));
+        List<ProjectReport.ExpenseByCategory> expensesByCategory = categoryMap.entrySet().stream()
+                .map(e -> new ProjectReport.ExpenseByCategory(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
 
-            BigDecimal milestoneTotal = expenses.stream()
-                    .map(Expense::getAmount)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Milestone status counts
+        Map<String, Long> statusCounts = milestones.stream()
+                .collect(Collectors.groupingBy(m -> m.getStatus().name(), Collectors.counting()));
+        List<ProjectReport.MilestoneStatus> milestoneStatus = Arrays.stream(Milestone.Status.values())
+                .map(s -> new ProjectReport.MilestoneStatus(s.name(), statusCounts.getOrDefault(s.name(), 0L)))
+                .collect(Collectors.toList());
 
-            totalSpent = totalSpent.add(milestoneTotal);
+        long completedCount = milestones.stream().filter(m -> m.getStatus() == Milestone.Status.COMPLETED).count();
+        double milestoneCompletion = milestones.isEmpty() ? 0.0 : (double) completedCount / milestones.size() * 100.0;
 
-            // Accumulate expenses into category buckets for the breakdown section of the report.
-            for (Expense expense : expenses) {
-                expenseByCategory.merge(expense.getCategory(), expense.getAmount(), BigDecimal::add);
-            }
+        int mDone = (int) completedCount;
+        String createdAt = project.getCreatedAt() != null ? project.getCreatedAt().toString() : null;
+        ProjectDto projectDto = new ProjectDto(
+                project.getId(), project.getTitle(), project.getDescription(),
+                project.getCategory(), project.getStatus().name(),
+                totalBudget, totalSpent, milestones.size(), mDone, createdAt, createdAt, null, project.getImageUrl());
 
-            milestoneSummaries.add(ProjectReport.MilestoneSummary.builder()
-                    .id(milestone.getId())
-                    .title(milestone.getTitle())
-                    .status(milestone.getStatus().name())
-                    .totalExpenses(milestoneTotal)
-                    .build());
-        }
-
-        // Completion % = completed milestones / total milestones x 100
-        long completedCount = milestones.stream()
-                .filter(m -> m.getStatus() == Milestone.Status.COMPLETED)
-                .count();
-        double completionPercentage = milestones.isEmpty()
-                ? 0.0
-                : (double) completedCount / milestones.size() * 100.0;
-
-        return ProjectReport.builder()
-                .projectId(project.getId())
-                .title(project.getTitle())
-                .status(project.getStatus().name())
-                .targetBudget(project.getTargetBudget())
-                .totalSpent(totalSpent)
-                .completionPercentage(completionPercentage)
-                .expenseByCategory(expenseByCategory)
-                .milestones(milestoneSummaries)
-                .build();
+        return new ProjectReport(projectDto, totalBudget, totalSpent, totalBudget - totalSpent,
+                milestoneCompletion, expensesByCategory, milestoneStatus);
     }
 }

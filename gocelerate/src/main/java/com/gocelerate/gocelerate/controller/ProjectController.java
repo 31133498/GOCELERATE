@@ -1,6 +1,7 @@
 package com.gocelerate.gocelerate.controller;
 
 import com.gocelerate.gocelerate.dto.ApiResponse;
+import com.gocelerate.gocelerate.dto.ProjectDto;
 import com.gocelerate.gocelerate.dto.ProjectRequest;
 import com.gocelerate.gocelerate.model.Project;
 import com.gocelerate.gocelerate.service.ProjectService;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Projects", description = "Create, retrieve, and update grant projects")
@@ -21,29 +23,42 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @Operation(summary = "List all projects", description = "Returns every project regardless of status or owner")
+    @Operation(summary = "List projects for the current user")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Project>>> getAllProjects() {
-        return ResponseEntity.ok(ApiResponse.success("Projects retrieved", projectService.getAllProjects()));
+    public ResponseEntity<ApiResponse<List<ProjectDto>>> getAllProjects(
+            @RequestParam(required = false) Project.Status status) {
+        return ResponseEntity.ok(ApiResponse.success("Projects retrieved", projectService.getAllProjects(status)));
     }
 
-    @Operation(summary = "Create a project", description = "Creates a new project owned by the authenticated implementer")
+    @Operation(summary = "Create a project")
     @PostMapping
     public ResponseEntity<ApiResponse<Project>> createProject(@Valid @RequestBody ProjectRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Project created", projectService.createProject(request)));
     }
 
-    @Operation(summary = "Get a project by id", description = "Returns a single project by its database id")
+    @Operation(summary = "Get a project by id")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Project>> getProject(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<ProjectDto>> getProject(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success("Project retrieved", projectService.getProjectById(id)));
     }
 
-    @Operation(summary = "Update project status", description = "Changes the project status. Pass ?status=ACTIVE, PENDING, or COMPLETED in the query string")
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Project>> updateStatus(
+    @Operation(summary = "Update project status")
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<ProjectDto>> updateStatus(
             @PathVariable Long id,
-            @RequestParam Project.Status status) {
-        return ResponseEntity.ok(ApiResponse.success("Status updated", projectService.updateProjectStatus(id, status)));
+            @RequestBody java.util.Map<String, String> body) {
+        Project.Status status = Project.Status.valueOf(body.get("status"));
+        projectService.updateProjectStatus(id, status);
+        return ResponseEntity.ok(ApiResponse.success("Status updated", projectService.getProjectById(id)));
+    }
+
+    @Operation(summary = "Pledge funds to a project (funder only)")
+    @PostMapping("/{id}/fund")
+    public ResponseEntity<ApiResponse<ProjectDto>> fundProject(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, Object> body) {
+        BigDecimal amount = new BigDecimal(body.get("amountPledged").toString());
+        projectService.fundProject(id, amount);
+        return ResponseEntity.ok(ApiResponse.success("Project funded successfully", projectService.getProjectById(id)));
     }
 }

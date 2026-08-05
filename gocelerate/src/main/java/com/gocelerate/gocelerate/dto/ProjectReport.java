@@ -1,38 +1,37 @@
 package com.gocelerate.gocelerate.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
-// The full project summary returned by GET /api/projects/{id}/report
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProjectReport {
 
-    private Long projectId;
-    private String title;
-    private String status;
-    private BigDecimal targetBudget;
-    private BigDecimal totalSpent;
-    private double completionPercentage;
-    private Map<String, BigDecimal> expenseByCategory;
-    private List<MilestoneSummary> milestones;
+    private ProjectDto project;
+    private double totalBudget;
+    private double totalSpent;
+    private double remainingBudget;
+    private double milestoneCompletion;
+    private List<ExpenseByCategory> expensesByCategory;
+    private List<MilestoneStatus> milestoneStatus;
 
     @Data
-    @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
-    public static class MilestoneSummary {
-        private Long id;
-        private String title;
+    @NoArgsConstructor
+    public static class ExpenseByCategory {
+        private String category;
+        private double amount;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MilestoneStatus {
         private String status;
-        private BigDecimal totalExpenses;
+        private long count;
     }
 }

@@ -45,6 +45,8 @@ public class Project {
     @JoinColumn(name = "implementer_id", nullable = false)
     private User implementer;
 
+    private String imageUrl;
+
     private LocalDateTime createdAt;
 
     @PrePersist

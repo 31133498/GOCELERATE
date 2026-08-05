@@ -2,6 +2,7 @@ package com.gocelerate.gocelerate.config;
 
 import com.gocelerate.gocelerate.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 // @Configuration marks this class as a source of Spring bean definitions.
@@ -27,11 +29,14 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
 
-    // Allows the React frontend (localhost:5173) to call the API during local development.
+    // Comma-separated list of allowed origins — set ALLOWED_ORIGINS env var in production
+    @Value("${ALLOWED_ORIGINS:http://localhost:5173}")
+    private String allowedOrigins;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -54,6 +59,7 @@ public class SecurityConfig {
                     // Auth endpoints and Swagger UI are publicly accessible.
                     .requestMatchers(
                             "/api/auth/**",
+                            "/api/public/**",
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/api-docs/**",

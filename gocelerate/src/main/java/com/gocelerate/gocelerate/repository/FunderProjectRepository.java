@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FunderProjectRepository extends JpaRepository<FunderProject, Long> {
@@ -14,4 +15,6 @@ public interface FunderProjectRepository extends JpaRepository<FunderProject, Lo
     List<FunderProject> findByFunder(User funder);
 
     List<FunderProject> findByProject(Project project);
+
+    Optional<FunderProject> findByFunderAndProject(User funder, Project project);
 }

@@ -21,4 +21,6 @@ public class MilestoneRequest {
     private LocalDate dueDate;
 
     private Milestone.Status status;
+
+    private String evidenceImageUrl;
 }

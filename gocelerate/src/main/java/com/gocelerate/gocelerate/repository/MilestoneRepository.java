@@ -11,4 +11,6 @@ public interface MilestoneRepository extends JpaRepository<Milestone, Long> {
 
     // findByProjectId lets us query by the foreign key directly — no need to load the Project object first
     List<Milestone> findByProjectId(Long projectId);
+
+    List<Milestone> findByStatus(Milestone.Status status);
 }

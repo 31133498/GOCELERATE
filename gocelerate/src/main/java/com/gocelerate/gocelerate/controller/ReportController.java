@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Reports", description = "Generate project summary reports for funders and implementers")
+@Tag(name = "Reports", description = "Generate project summary reports. All budget and spend values are in Nigerian Naira (NGN).")
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
@@ -19,7 +19,7 @@ public class ReportController {
 
     @Operation(
         summary = "Generate a project report",
-        description = "Returns a full summary including total spend, category breakdown, milestone statuses, and completion percentage"
+        description = "Returns a full summary including total spend, category breakdown, milestone statuses, and completion percentage. All monetary values are in Naira (NGN)."
     )
     @GetMapping("/{id}/report")
     public ResponseEntity<ApiResponse<ProjectReport>> getReport(@PathVariable Long id) {

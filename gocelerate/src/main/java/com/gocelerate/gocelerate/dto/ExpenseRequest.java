@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class ExpenseRequest {
 
     @NotNull(message = "Amount is required")
-    @Positive(message = "Amount must be a positive number")
+    @Positive(message = "Amount must be a positive value in Naira")
     private BigDecimal amount;
 
     @NotBlank(message = "Category is required")

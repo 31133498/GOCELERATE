@@ -38,6 +38,9 @@ public class Milestone {
     // LocalDate (no time) is correct for due dates — milestones are due on a day, not a moment
     private LocalDate dueDate;
 
+    @Column(columnDefinition = "TEXT")
+    private String evidenceImageUrl;
+
     private LocalDateTime createdAt;
 
     @PrePersist

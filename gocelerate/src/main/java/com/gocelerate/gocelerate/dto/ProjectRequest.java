@@ -20,8 +20,10 @@ public class ProjectRequest {
     private String description;
 
     @NotNull(message = "Target budget is required")
-    @Positive(message = "Target budget must be a positive number")
+    @Positive(message = "Target budget must be a positive amount in Naira")
     private BigDecimal targetBudget;
 
     private String category;
+
+    private String imageUrl;
 }

@@ -4,6 +4,7 @@ import com.gocelerate.gocelerate.dto.ApiResponse;
 import com.gocelerate.gocelerate.dto.LoginRequest;
 import com.gocelerate.gocelerate.dto.LoginResponse;
 import com.gocelerate.gocelerate.dto.RegisterRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.gocelerate.gocelerate.model.User;
 import com.gocelerate.gocelerate.repository.UserRepository;
 import com.gocelerate.gocelerate.security.JwtUtil;
@@ -69,5 +70,17 @@ public class AuthService implements UserDetailsService {
         LoginResponse.UserDto userDto = new LoginResponse.UserDto(
                 user.getId(), user.getFullName(), user.getEmail(), user.getRole().name());
         return ApiResponse.success("Login successful", new LoginResponse(token, userDto));
+    }
+
+    public ApiResponse<String> changePassword(String currentPassword, String newPassword) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadCredentialsException("User not found"));
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new BadCredentialsException("Current password is incorrect");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return ApiResponse.success("Password updated successfully", null);
     }
 }

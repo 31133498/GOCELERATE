@@ -31,4 +31,10 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @Operation(summary = "Change password", description = "Updates the authenticated user's password")
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<String>> changePassword(@RequestBody java.util.Map<String, String> body) {
+        return ResponseEntity.ok(authService.changePassword(body.get("currentPassword"), body.get("newPassword")));
+    }
 }
