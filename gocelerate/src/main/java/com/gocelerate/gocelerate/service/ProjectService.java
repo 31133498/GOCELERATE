@@ -151,6 +151,29 @@ public class ProjectService {
         }
     }
 
+    public List<PublicProjectView> getAllPublicProjects() {
+        return projectRepository.findAll().stream()
+                .map(p -> {
+                    List<Milestone> milestones = milestoneRepository.findByProjectId(p.getId());
+                    double totalSpent = milestones.stream()
+                            .flatMap(m -> expenseRepository.findByMilestoneId(m.getId()).stream())
+                            .mapToDouble(e -> e.getAmount().doubleValue()).sum();
+                    int mDone = (int) milestones.stream()
+                            .filter(m -> m.getStatus() == Milestone.Status.COMPLETED).count();
+                    double totalPledged = funderProjectRepository.findByProject(p).stream()
+                            .mapToDouble(fp -> fp.getAmountPledged().doubleValue()).sum();
+                    String createdAt = p.getCreatedAt() != null ? p.getCreatedAt().toString() : null;
+                    return new PublicProjectView(
+                            p.getId(), p.getTitle(), p.getDescription(),
+                            p.getCategory(), p.getStatus().name(), p.getImageUrl(),
+                            p.getTargetBudget().doubleValue(), totalPledged, totalSpent,
+                            milestones.size(), mDone, createdAt,
+                            List.of(), List.of()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
     public PublicProjectView getPublicProjectView(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));

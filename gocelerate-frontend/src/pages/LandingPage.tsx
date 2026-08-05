@@ -312,9 +312,9 @@ export default function LandingPage() {
                     <Link to="/register" className="w-full sm:w-auto text-center bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold px-8 py-3.5 rounded-full transition-all hover:scale-105 hover:shadow-xl text-base">
                       Get Started Free <i className="ri-arrow-right-line ml-1" />
                     </Link>
-                    <a href="#how-it-works" className="w-full sm:w-auto text-center text-white/70 hover:text-white border border-white/20 hover:border-white/50 font-semibold px-8 py-3.5 rounded-full transition-all hover:scale-105 text-base">
-                      See How It Works
-                    </a>
+                    <Link to="/browse" className="w-full sm:w-auto text-center text-white/70 hover:text-white border border-white/20 hover:border-white/50 font-semibold px-8 py-3.5 rounded-full transition-all hover:scale-105 text-base">
+                      <i className="ri-search-line mr-2" />Browse Projects
+                    </Link>
                   </>
                 )}
               </div>
@@ -651,7 +651,7 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-10">
               {[
-                { title: 'Platform', links: [['#features','Features'],['#how-it-works','How It Works'],['#sdgs','SDG Impact']] },
+                { title: 'Platform', links: [['#features','Features'],['#how-it-works','How It Works'],['#sdgs','SDG Impact'],['/browse','Browse Projects']] },
                 { title: 'Account',  links: [['/register','Sign Up'],['/login','Sign In'],['/register?role=IMPLEMENTER','Implementer'],['/register?role=FUNDER','Funder']] },
                 { title: 'Context',  links: [['#','Nigerian NGOs'],['#','SDG Alignment'],['#','Social Impact'],['#','COS 202 Project']] },
               ].map(col=>(

@@ -27,5 +27,8 @@ export const getDashboardStats = () =>
 export const getFunderDashboardStats = () =>
   api.get<FunderDashboardStats>('/api/dashboard/funder-stats');
 
+export const getPublicProjects = () =>
+  api.get<PublicProjectView[]>('/api/public/projects');
+
 export const getPublicProject = (id: number) =>
   api.get<PublicProjectView>(`/api/public/projects/${id}`);

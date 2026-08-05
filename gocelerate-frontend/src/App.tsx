@@ -5,8 +5,9 @@ import PublicRoute from './routes/PublicRoute';
 import DashboardLayout from './components/layout/DashboardLayout';
 import CookieBanner from './components/ui/CookieBanner';
 
-import LandingPage    from './pages/LandingPage';
-import PublicProject  from './pages/PublicProject';
+import LandingPage      from './pages/LandingPage';
+import BrowseProjects  from './pages/BrowseProjects';
+import PublicProject   from './pages/PublicProject';
 import Login         from './pages/auth/Login';
 import Register      from './pages/auth/Register';
 import Dashboard     from './pages/Dashboard';
@@ -26,6 +27,7 @@ export default function App() {
         <Routes>
           {/* Public pages — no auth required */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/browse" element={<BrowseProjects />} />
           <Route path="/p/:id" element={<PublicProject />} />
 
           {/* Auth routes — redirect to /dashboard when already logged in */}
