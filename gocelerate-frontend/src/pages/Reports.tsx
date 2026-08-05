@@ -189,7 +189,7 @@ export default function Reports() {
                       tick={{ fontSize: 12, fill: '#374151' }} axisLine={false} tickLine={false}
                       tickFormatter={(v: string) => v.charAt(0) + v.slice(1).toLowerCase()} />
                     <Tooltip
-                      formatter={(v: number) => [formatCurrency(v), 'Amount']}
+                      formatter={(v) => [formatCurrency(v as number), 'Amount']}
                       contentStyle={{ borderRadius: 8, border: '1px solid #E5E7EB', fontSize: 12 }}
                     />
                     <Bar dataKey="amount" radius={[0, 4, 4, 0]} barSize={20}>

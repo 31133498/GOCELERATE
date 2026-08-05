@@ -60,7 +60,7 @@ export default function BudgetBarChart({ data, loading, label1 = 'Budget', label
           width={56}
         />
         <Tooltip
-          formatter={(val: number) => formatCompactCurrency(val)}
+          formatter={(val) => formatCompactCurrency(val as number)}
           contentStyle={{ borderRadius: 8, border: '1px solid #E5E7EB', fontSize: 12 }}
         />
         <Legend

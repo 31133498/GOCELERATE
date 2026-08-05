@@ -200,7 +200,7 @@ export default function PublicProject() {
               {/* Vertical line */}
               <div className="absolute left-5 top-0 bottom-0 w-px bg-gray-200 ml-px" />
               <div className="space-y-6">
-                {data.milestones.map((m, i) => (
+                {data.milestones.map((m) => (
                   <div key={m.id} className="relative flex gap-5">
                     {/* Circle */}
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 border-2 z-10

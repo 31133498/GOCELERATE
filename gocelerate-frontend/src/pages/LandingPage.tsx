@@ -99,7 +99,7 @@ function RevealDiv({
 }
 
 type StatItem = { raw: number; suffix: string; label: string; icon: string; prefix?: string };
-function StatCounter({ raw, suffix, prefix = '', label, icon }: StatItem) {
+function StatCounter({ raw, suffix, prefix = '', label }: StatItem) {
   const { ref, inView } = useInView(0.3);
   const count = useCountUp(raw, inView, 1600);
   return (

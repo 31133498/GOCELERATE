@@ -41,7 +41,7 @@ export default function MilestoneDonut({ data, loading }: MilestoneDonutProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(val: number) => [val, '']}
+          formatter={(val) => [val as number, '']}
           contentStyle={{ borderRadius: 8, border: '1px solid #E5E7EB', fontSize: 12 }}
         />
         <Legend
