@@ -2,6 +2,7 @@ package com.gocelerate.gocelerate.service;
 
 import com.gocelerate.gocelerate.dto.ApiResponse;
 import com.gocelerate.gocelerate.dto.LoginRequest;
+import com.gocelerate.gocelerate.dto.LoginResponse;
 import com.gocelerate.gocelerate.dto.RegisterRequest;
 import com.gocelerate.gocelerate.model.User;
 import com.gocelerate.gocelerate.repository.UserRepository;
@@ -56,18 +57,17 @@ public class AuthService implements UserDetailsService {
         return ApiResponse.success("Registration successful", null);
     }
 
-    public ApiResponse<String> login(LoginRequest request) {
-        // Use a generic message for both "user not found" and "wrong password" to prevent
-        // user enumeration attacks, where an attacker probes which emails are registered.
+    public ApiResponse<LoginResponse> login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
-        // BCrypt re-hashes the provided password and compares — it never decrypts.
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return ApiResponse.success("Login successful", token);
+        LoginResponse.UserDto userDto = new LoginResponse.UserDto(
+                user.getId(), user.getFullName(), user.getEmail(), user.getRole().name());
+        return ApiResponse.success("Login successful", new LoginResponse(token, userDto));
     }
 }

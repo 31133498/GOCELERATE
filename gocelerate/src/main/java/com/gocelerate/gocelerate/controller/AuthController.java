@@ -2,6 +2,7 @@ package com.gocelerate.gocelerate.controller;
 
 import com.gocelerate.gocelerate.dto.ApiResponse;
 import com.gocelerate.gocelerate.dto.LoginRequest;
+import com.gocelerate.gocelerate.dto.LoginResponse;
 import com.gocelerate.gocelerate.dto.RegisterRequest;
 import com.gocelerate.gocelerate.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ public class AuthController {
 
     @Operation(summary = "Login", description = "Authenticates a user and returns a JWT bearer token valid for 24 hours")
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 }
