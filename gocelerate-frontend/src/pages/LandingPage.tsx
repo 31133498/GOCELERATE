@@ -289,10 +289,7 @@ export default function LandingPage() {
             <div className="flex-1 text-center lg:text-left">
               <h1 className="animate-fade-up delay-100 text-4xl sm:text-5xl lg:text-[3.8rem] font-black text-white leading-[1.08] mb-6 tracking-tight">
                 Track Every Naira.<br />
-                <span
-                  className="animate-gradient"
-                  style={{ background: 'linear-gradient(90deg,#06B6D4,#22C55E,#06B6D4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', backgroundSize: '200% 200%' }}
-                >
+                <span className="font-display italic font-semibold text-white">
                   Prove Every Outcome.
                 </span>
               </h1>
