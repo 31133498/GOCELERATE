@@ -1,0 +1,19 @@
+name: Keep Backend Awake
+
+on:
+  schedule:
+    # Every 10 minutes. Render's free tier spins down after ~15 minutes of inactivity.
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "https://gocelerate.onrender.com/api/public/projects")
+          echo "Backend responded with HTTP $status"
+          if [ "$status" -lt 200 ] || [ "$status" -ge 500 ]; then
+            echo "::warning::Backend returned HTTP $status"
+          fi
